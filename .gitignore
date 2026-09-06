@@ -1,0 +1,7 @@
+for_attack_gen/
+for_defense_gen/
+.pdf
+.env
+.venv/
+venv/
+__pycache__/
