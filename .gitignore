@@ -5,3 +5,5 @@ for_defense_gen/
 .venv/
 venv/
 __pycache__/
+*.dump
+.env
