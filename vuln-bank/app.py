@@ -344,7 +344,9 @@ def api_battle_history():
         }, 500
 
 
-
+@app.route("/cyber-defense")
+def cyber_defense_dashboard():
+    return render_template("cyber_defense.html")
 
 
 
