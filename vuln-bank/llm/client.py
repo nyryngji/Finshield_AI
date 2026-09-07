@@ -59,6 +59,9 @@ def generate_json(
     user_prompt,
     max_new_tokens=128
 ):
+    if os.getenv("DISABLE_LOCAL_LLM") == "1":
+        raise RuntimeError("Local LLM disabled on Render")
+
     tokenizer, model = load_model()
 
     messages = [
