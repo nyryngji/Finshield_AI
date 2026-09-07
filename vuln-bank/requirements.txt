@@ -15,7 +15,5 @@ torch
 transformers
 accelerate
 sentencepiece
-
 pandas
-re
 psycopg2
