@@ -9,19 +9,70 @@ from dotenv import load_dotenv
 # CWE-259: Use of Hard-coded Password
 # CWE-798: Use of Hard-coded Credentials
 
-load_dotenv("C:\\AIGuard\\vuln-bank\\db_work\\.env")
+
+from dotenv import load_dotenv
+import os
+import time
+import psycopg2
+import psycopg2.pool
+
+# 로컬에서는 프로젝트의 .env를 읽고,
+# Render에서는 Render Environment Variables를 사용
+load_dotenv()
 
 DB_CONFIG = {
     'dbname': os.getenv('DB_NAME', 'vulnerable_bank'),
     'user': os.getenv('DB_USER', 'postgres'),
-    'password': os.getenv('DB_PASSWORD', 'postgres'),  # Hardcoded password in default value
+    'password': os.getenv('DB_PASSWORD', 'postgres'),
     'host': os.getenv('DB_HOST', 'localhost'),
     'port': os.getenv('DB_PORT', '5432'),
     'options': f"-c statement_timeout={os.getenv('DB_STATEMENT_TIMEOUT_MS', '15000')}",
 }
 
-# Create a connection pool
 connection_pool = None
+
+def init_connection_pool(
+    min_connections=2,
+    max_connections=30,
+    max_retries=5,
+    retry_delay=2
+):
+    global connection_pool
+
+    if connection_pool is not None:
+        return connection_pool
+
+    retry_count = 0
+
+    while retry_count < max_retries:
+        try:
+            connection_pool = psycopg2.pool.ThreadedConnectionPool(
+                min_connections,
+                max_connections,
+                **DB_CONFIG
+            )
+
+            print("Database connection pool created successfully")
+            return connection_pool
+
+        except Exception as e:
+            retry_count += 1
+
+            print(
+                f"Failed to connect to database "
+                f"(attempt {retry_count}/{max_retries}): {e}"
+            )
+
+            if retry_count < max_retries:
+                print(f"Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+            else:
+                print(
+                    "Max retries reached. "
+                    "Could not establish database connection."
+                )
+                raise
+
 
 def init_connection_pool(min_connections=2, max_connections=30, max_retries=5, retry_delay=2):
     """

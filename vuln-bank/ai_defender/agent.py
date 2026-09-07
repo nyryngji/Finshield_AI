@@ -27,11 +27,6 @@ ALLOWED_ACTIONS = {
     "RATE_LIMIT"
 }
 
-import json
-
-from llm.client import generate_json
-
-
 def analyze_observation(observation, rag_context=None):
 
     if rag_context is None:

@@ -235,29 +235,6 @@ def before_request_observation():
 
 @app.after_request
 def after_request_observation(response):
-
-    if should_observe():
-        observation = build_observation(response)
-
-        # 1. 관측 데이터 저장
-        event_id = save_security_observation(observation)
-
-        # 2. Defender는 observation만 받음
-        defense = analyze_observation(observation)
-
-        # 3. AI/Rule 판단 별도 저장
-        analysis_id = save_defense_result(
-            event_id,
-            defense
-        )
-
-        print(
-            f"[DEFENDER] event={event_id} "
-            f"analysis={analysis_id} "
-            f"prediction={defense['attack_type']} "
-            f"confidence={defense['confidence']}"
-        )
-
     return response
 
 
