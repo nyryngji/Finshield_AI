@@ -326,15 +326,6 @@ def cyber_defense_dashboard():
     return render_template("cyber_defense.html")
 
 
-
-
-
-
-
-
-
-
-
 @app.route('/healthz', methods=['GET'])
 def health_check():
     db_healthy = check_database_connection()
@@ -396,7 +387,7 @@ def graphql_endpoint(current_user):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('cyber_defense_dashboard'))
 
 @app.route('/privacy')
 def privacy():
